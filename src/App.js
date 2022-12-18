@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -9,25 +8,18 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import { Button} from '@mui/material';
 import ReactJkMusicPlayer from 'react-jinke-music-player'
 import 'react-jinke-music-player/assets/index.css'
 import {useState, useEffect} from "react"
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
 const { Configuration, OpenAIApi } = require("openai");
 
 
-const configuration = new Configuration({
-  apiKey: "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",
-});
-const openai = new OpenAIApi(configuration);
 
-const tags = 'tribal,action,kids,neo-classic,run 130,pumped,jazz / funk,ethnic,dubtechno,reggae,acid jazz,liquidfunk,funk,witch house,tech house,underground,artists,mystical,disco,sensorium,r&b,agender,psychedelic trance / psytrance,peaceful,run 140,piano,run 160,setting,meditation,christmas,ambient,horror,cinematic,electro house,idm,bass,minimal,underscore,drums,glitchy,beautiful,technology,tribal house,country pop,jazz & funk,documentary,space,classical,valentines,chillstep,experimental,trap,new jack swing,drama,post-rock,tense,corporate,neutral,happy,analog,funky,spiritual,sberzvuk special,chill hop,dramatic,catchy,holidays,fitness 90,optimistic,orchestra,acid techno,energizing,romantic,minimal house,breaks,hyper pop,warm up,dreamy,dark,urban,microfunk,dub,nu disco,vogue,keys,hardcore,aggressive,indie,electro funk,beauty,relaxing,trance,pop,hiphop,soft,acoustic,chillrave / ethno-house,deep techno,angry,dance,fun,dubstep,tropical,latin pop,heroic,world music,inspirational,uplifting,atmosphere,art,epic,advertising,chillout,scary,spooky,slow ballad,saxophone,summer,erotic,jazzy,energy 100,kara mar,xmas,atmospheric,indie pop,hip-hop,yoga,reggaeton,lounge,travel,running,folk,chillrave & ethno-house,detective,darkambient,chill,fantasy,minimal techno,special,night,tropical house,downtempo,lullaby,meditative,upbeat,glitch hop,fitness,neurofunk,sexual,indie rock,future pop,jazz,cyberpunk,melancholic,happy hardcore,family / kids,synths,electric guitar,comedy,psychedelic trance & psytrance,edm,psychedelic rock,calm,zen,bells,podcast,melodic house,ethnic percussion,nature,heavy,bassline,indie dance,techno,drumnbass,synth pop,vaporwave,sad,8-bit,chillgressive,deep,orchestral,futuristic,hardtechno,nostalgic,big room,sci-fi,tutorial,joyful,pads,minimal 170,drill,ethnic 108,amusing,sleepy ambient,psychill,italo disco,lofi,house,acoustic guitar,bassline house,rock,k-pop,synthwave,deep house,electronica,gabber,nightlife,sport & fitness,road trip,celebration,electro,disco house,electronic';
-const genres = ['jazz / funk', 'jazz', 'neo-classic', 'liquidfunk', 'underground', 'r&b', 'classical', 'disco', 'witch house', 'tech house', 'cinematic', 'funky', 'pop', 'hippop', 'electric guitar'];
+//const tags = 'tribal,action,kids,neo-classic,run 130,pumped,jazz / funk,ethnic,dubtechno,reggae,acid jazz,liquidfunk,funk,witch house,tech house,underground,artists,mystical,disco,sensorium,r&b,agender,psychedelic trance / psytrance,peaceful,run 140,piano,run 160,setting,meditation,christmas,ambient,horror,cinematic,electro house,idm,bass,minimal,underscore,drums,glitchy,beautiful,technology,tribal house,country pop,jazz & funk,documentary,space,classical,valentines,chillstep,experimental,trap,new jack swing,drama,post-rock,tense,corporate,neutral,happy,analog,funky,spiritual,sberzvuk special,chill hop,dramatic,catchy,holidays,fitness 90,optimistic,orchestra,acid techno,energizing,romantic,minimal house,breaks,hyper pop,warm up,dreamy,dark,urban,microfunk,dub,nu disco,vogue,keys,hardcore,aggressive,indie,electro funk,beauty,relaxing,trance,pop,hiphop,soft,acoustic,chillrave / ethno-house,deep techno,angry,dance,fun,dubstep,tropical,latin pop,heroic,world music,inspirational,uplifting,atmosphere,art,epic,advertising,chillout,scary,spooky,slow ballad,saxophone,summer,erotic,jazzy,energy 100,kara mar,xmas,atmospheric,indie pop,hip-hop,yoga,reggaeton,lounge,travel,running,folk,chillrave & ethno-house,detective,darkambient,chill,fantasy,minimal techno,special,night,tropical house,downtempo,lullaby,meditative,upbeat,glitch hop,fitness,neurofunk,sexual,indie rock,future pop,jazz,cyberpunk,melancholic,happy hardcore,family / kids,synths,electric guitar,comedy,psychedelic trance & psytrance,edm,psychedelic rock,calm,zen,bells,podcast,melodic house,ethnic percussion,nature,heavy,bassline,indie dance,techno,drumnbass,synth pop,vaporwave,sad,8-bit,chillgressive,deep,orchestral,futuristic,hardtechno,nostalgic,big room,sci-fi,tutorial,joyful,pads,minimal 170,drill,ethnic 108,amusing,sleepy ambient,psychill,italo disco,lofi,house,acoustic guitar,bassline house,rock,k-pop,synthwave,deep house,electronica,gabber,nightlife,sport & fitness,road trip,celebration,electro,disco house,electronic';
+//const genres = ['jazz / funk', 'jazz', 'neo-classic', 'liquidfunk', 'underground', 'r&b', 'classical', 'disco', 'witch house', 'tech house', 'cinematic', 'funky', 'pop', 'hippop', 'electric guitar'];
 const emotions = {
   "happy": ['happy','joyful', 'fun'],
   "calm": ['peaceful', 'neutral', 'soft'],
@@ -65,7 +57,17 @@ const darkTheme = createTheme({
   },
 });
 
+const openaiKey = new URLSearchParams(window.location.search).get('key') || "none";
+console.log(openaiKey);
+
+const configuration = new Configuration({
+  apiKey: openaiKey,
+});
+
+const openai = new OpenAIApi(configuration);
+
 function App() {
+
   const [audioList, setAudioList] = useState([{
     "name": "Background",
     "singer": "AI", 
@@ -74,8 +76,6 @@ function App() {
   ]);
   const [text, setText] = useState("sadness, lonely");
   const [patToken, setPatToken] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [license, setLicense] = useState(null);
   const [musicInstance, setMusicInstance] = useState(null);
   const [musicLink, setMusicLink] = useState([
   {
@@ -92,8 +92,6 @@ function App() {
     setAudioList(musicLink);
     setTargetMusicId(targetMusicId+1);
   }, [musicLink])
-
-  const changeLoadingStatus = () => {};
 
   const getPatToken = async () => {
     setLoading(true);
@@ -164,7 +162,7 @@ function App() {
         body: JSON.stringify({
           "method":"GetServiceAccess",
           "params": {
-              "email": "lewus.ad@gmail.com",
+              "email": "lewas.ad@gmail.com",
               "license":"ttmmubertlicense#f0acYBenRcfeFpNT4wpYGaTQIyDI4mJGv5MfIhBFz97NXDwDNFHmMRsBSzmGsJwbTpP1A6i07AXcIeAHo5",
               "token":"4951f6428e83172a4f39de05d5b3ab10d58560b8",
               "mode": "loop"
@@ -178,7 +176,7 @@ function App() {
   return (
     <Container className="App" sx={{height: "100vh"}}>
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="transparent" elevation="0">
+      <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar variant="regular" elevation="0">
           <Typography variant="h3" color="inherit" component="div"
             sx={{fontFamily: "'Dancing Script', cursive", color: "rgb(220,220,220)", margin: "20px"}}
