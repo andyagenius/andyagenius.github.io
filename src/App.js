@@ -232,7 +232,7 @@ function App() {
   }, [musicLink])
 
   const getPiano = async () => {
-    fetch('http://47.88.13.166:9001/piano?text='+text,
+    fetch('https://andymusic.xyz/piano?text='+text,
     {
       method: 'GET',
       mode: 'cors',
@@ -249,7 +249,7 @@ function App() {
         return;
       }
       let songn = resJson['songn'];
-      let song_link = 'http://47.88.13.166:9001/' + songn;
+      let song_link = 'https://andymusic.xyz/' + songn;
       let tmpList = [{
           singer: "AI",
           cover: "icon.png",
